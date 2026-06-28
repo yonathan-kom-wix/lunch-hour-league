@@ -1,5 +1,8 @@
 import type { APIRoute } from 'astro';
 import { items } from '@wix/data';
+import { auth } from '@wix/essentials';
+
+const elevatedInsert = auth.elevate(items.insert);
 
 export const POST: APIRoute = async ({ request }) => {
   let body: Record<string, string>;
@@ -15,6 +18,10 @@ export const POST: APIRoute = async ({ request }) => {
     return new Response(JSON.stringify({ error: 'Missing required fields' }), { status: 400 });
   }
 
-  await items.insert('Registrations', { companyName, captainName, workEmail, squadSize, preferredDivision, preferredVenue });
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(workEmail)) {
+    return new Response(JSON.stringify({ error: 'Invalid email address' }), { status: 400 });
+  }
+
+  await elevatedInsert('Registrations', { companyName, captainName, workEmail, squadSize, preferredDivision, preferredVenue });
   return new Response(JSON.stringify({ ok: true }), { status: 200 });
 };
