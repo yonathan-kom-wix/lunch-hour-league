@@ -1,0 +1,56 @@
+---
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+
+interface Props {
+  title: string;
+  description?: string;
+  jsonld?: object;
+}
+const {
+  title,
+  description = "5-a-side football for people with 60 minutes, total.",
+  jsonld,
+} = Astro.props;
+
+const tekoWoff2 = new URL(
+  "../../node_modules/@fontsource/teko/files/teko-latin-500-normal.woff2",
+  import.meta.url
+);
+const arch400Woff2 = new URL(
+  "../../node_modules/@fontsource/archivo/files/archivo-latin-400-normal.woff2",
+  import.meta.url
+);
+const arch600Woff2 = new URL(
+  "../../node_modules/@fontsource/archivo/files/archivo-latin-600-normal.woff2",
+  import.meta.url
+);
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title} | Lunch Hour League</title>
+    <meta name="description" content={description} />
+
+    <!-- font preloads for LCP -->
+    <link rel="preload" as="font" type="font/woff2" href={tekoWoff2.pathname} crossorigin="anonymous" />
+    <link rel="preload" as="font" type="font/woff2" href={arch400Woff2.pathname} crossorigin="anonymous" />
+    <link rel="preload" as="font" type="font/woff2" href={arch600Woff2.pathname} crossorigin="anonymous" />
+
+    {jsonld && (
+      <script is:inline type="application/ld+json" set:html={JSON.stringify(jsonld)} />
+    )}
+  </head>
+  <body class="bg-background text-text font-body min-h-screen">
+    <Header />
+    <main>
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>

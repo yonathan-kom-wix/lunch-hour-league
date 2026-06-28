@@ -1,0 +1,156 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { items } from '@wix/data';
+
+const STATIC_STORY = {
+  heading: 'Why We Built a League Around the Clock',
+  body: [
+    'The Lunch Hour League started because a finance team kept losing their five-a-side to overrunning meetings, and then losing the meeting because half the room wanted to be at football.',
+    'We decided the hour was the product. Kickoff is 12:15 sharp; if a team is not on the pitch the clock still runs, because the next match needs the slot. Forty minutes of play, a hard final whistle at 12:55, and the showers are guaranteed clear by 13:00 so nobody walks into a one o\'clock standup damp.',
+    'We field teams of six so a company can rotate and nobody sits out a whole match. The disciplinary panel is mostly a joke, except for the one rule it takes seriously: do not schedule a meeting over match day.',
+  ],
+};
+
+type Story = { heading: string; body: string[] };
+
+async function fetchStory(): Promise<Story> {
+  try {
+    const result = await items.query('StoryBlocks').find();
+    const raw = result.items[0] as Record<string, unknown> | undefined;
+    if (!raw) return STATIC_STORY;
+    return {
+      heading: String(raw.heading ?? STATIC_STORY.heading),
+      body: String(raw.body ?? '').split('\n\n').filter(Boolean),
+    };
+  } catch {
+    return STATIC_STORY;
+  }
+}
+
+const story = await fetchStory();
+
+const jsonld = {
+  "@context": "https://schema.org",
+  "@type": "SportsEvent",
+  "name": "Lunch Hour League – Autumn 2026",
+  "sport": "football",
+  "description": "Corporate 5-a-side football league. Kickoff 12:15, final whistle 12:55, showers clear by 13:00.",
+  "startDate": "2026-09-01",
+  "endDate": "2026-11-30",
+  "eventSchedule": {
+    "@type": "Schedule",
+    "repeatFrequency": "P1W",
+    "byDay": ["https://schema.org/Tuesday", "https://schema.org/Thursday"],
+    "startTime": "12:15",
+    "endTime": "13:00"
+  },
+  "location": {
+    "@type": "Place",
+    "name": "Manchester City Centre",
+    "address": { "@type": "PostalAddress", "addressLocality": "Manchester", "addressCountry": "GB" }
+  },
+  "organizer": { "@type": "Organization", "name": "Lunch Hour League" }
+};
+
+const protocol = [
+  { time: "12:10", phase: "Phase 01", label: "Arrival",       desc: "Lace up. Brief warmup. The pitch is ready." },
+  { time: "12:15", phase: "Phase 02", label: "Kickoff",        desc: "Whistle blows. 20-minute halves. Intensive play." },
+  { time: "12:55", phase: "Phase 03", label: "Final Whistle",  desc: "Game over. Handshakes. Quick stat logging." },
+  { time: "13:00", phase: "Phase 04", label: "Desk Return",    desc: "Back online. Head into settings. Ready for the PM slot." },
+];
+---
+
+<Layout title="How It Works" description="The 60-minute promise. Kickoff 12:15, showers clear by 13:00." jsonld={jsonld}>
+
+  <!-- HERO -->
+  <section class="bg-dark text-on-dark border-b border-border/20">
+    <div class="max-w-7xl mx-auto px-4 py-16">
+      <p class="font-mono text-xs tracking-widest uppercase text-on-dark/60 mb-4">The Format</p>
+      <h1 class="font-display text-5xl md:text-7xl uppercase leading-none">The 60-Minute Promise</h1>
+      <p class="font-mono text-xs uppercase tracking-widest text-on-dark/60 mt-4">
+        Clock in. Play hard. Clock out. No exceptions.
+      </p>
+    </div>
+  </section>
+
+  <!-- MATCH PROTOCOL + PHOTO -->
+  <section class="border-b border-border">
+    <div class="max-w-7xl mx-auto px-4 py-16 grid md:grid-cols-2 gap-12">
+      <div>
+        <h2 class="font-display text-2xl uppercase mb-8">Match Protocol</h2>
+        <div class="flex flex-col gap-0 border border-border">
+          {protocol.map(({ time, phase, label, desc }) => (
+            <div class="grid grid-cols-[auto_1fr] border-b last:border-b-0 border-border">
+              <div class="bg-dark text-on-dark px-4 py-4 font-mono text-sm font-bold w-20 shrink-0 flex flex-col justify-between">
+                <span>{time}</span>
+              </div>
+              <div class="px-4 py-4">
+                <p class="font-mono text-xs text-muted uppercase tracking-widest mb-1">{phase}</p>
+                <p class="font-display text-lg uppercase">{label}</p>
+                <p class="font-body text-sm text-muted mt-1">{desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- 6-a-side specs -->
+      <div class="flex flex-col gap-6">
+        <div class="border border-border p-6">
+          <h2 class="font-display text-2xl uppercase mb-6">Six-a-Side Specs</h2>
+          <ul class="flex flex-col gap-3 font-mono text-xs uppercase tracking-wider">
+            {[
+              "6v6 Format (max 9 roster)",
+              "3 × 20 min halves",
+              "Enclosed turf pitch",
+              "No offside. Overhead height.",
+            ].map((item) => (
+              <li class="flex items-center gap-3 border-b border-border pb-3 last:border-b-0 last:pb-0 text-text">
+                <span class="text-primary">→</span>
+                {item}
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div class="grid grid-cols-2 gap-0 border border-border">
+          {[
+            { label: "Efficiency metric", value: "100%", unit: "Yield" },
+            { label: "Proximity metric",  value: "< 10 MIN", unit: "Walk" },
+          ].map(({ label, value, unit }) => (
+            <div class="border-r last:border-r-0 border-border p-6">
+              <p class="font-mono text-xs text-muted uppercase tracking-widest mb-2">{label}</p>
+              <p class="font-display text-3xl uppercase text-primary">{value}</p>
+              <p class="font-mono text-xs text-muted uppercase tracking-widest mt-1">{unit}</p>
+            </div>
+          ))}
+        </div>
+
+        <div class="border border-border p-6 bg-surface">
+          <p class="font-mono text-xs text-muted uppercase tracking-widest mb-2">Punctuality Mandate</p>
+          <p class="font-body text-sm text-text leading-relaxed">
+            Matches commence strictly at 12:15. A 5-minute grace period applies, after which forfeiture protocols are initiated. The clock does not wait for pending meetings.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHY WE BUILT IT -->
+  <section class="border-b border-border">
+    <div class="max-w-7xl mx-auto px-4 py-16 grid md:grid-cols-2 gap-12">
+      <div>
+        <h2 class="font-display text-3xl uppercase leading-tight mb-6">{story.heading}</h2>
+        <div class="flex flex-col gap-4 font-body text-sm text-muted leading-relaxed">
+          {story.body.map((para) => <p>{para}</p>)}
+        </div>
+      </div>
+      <div class="flex items-center justify-center bg-dark text-on-dark p-12">
+        <p class="font-display text-5xl md:text-7xl uppercase leading-none text-center">
+          Clock in.<br />Play hard.<br />Clock out.
+        </p>
+      </div>
+    </div>
+  </section>
+
+</Layout>

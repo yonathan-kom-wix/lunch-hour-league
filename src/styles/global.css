@@ -1,0 +1,79 @@
+@import "tailwindcss";
+
+@import "@fontsource/teko/500.css";
+@import "@fontsource/teko/600.css";
+@import "@fontsource/archivo/400.css";
+@import "@fontsource/archivo/600.css";
+@import "@fontsource/jetbrains-mono/400.css";
+@import "@fontsource/jetbrains-mono/700.css";
+
+@theme {
+  --color-background: #F5F7F4;
+  --color-surface: #FFFFFF;
+  --color-text: #14241C;
+  --color-text-muted: #4A5A52;
+  --color-muted: #4A5A52;
+  --color-border: #D2DAD4;
+  --color-primary: #1B4332;
+  --color-accent: #0F5C3A;
+  --color-dark: #10231A;
+  --color-on-dark: #F5F7F4;
+
+  --font-display: "Teko", "Teko Fallback", ui-sans-serif;
+  --font-body: "Archivo", ui-sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace;
+
+  --radius: 0px;
+}
+
+* {
+  border-radius: 0 !important;
+}
+
+html {
+  background-color: var(--color-background);
+  color: var(--color-text);
+  font-family: var(--font-body);
+}
+
+body {
+  margin: 0;
+}
+
+/* Visible focus ring for keyboard nav */
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* Reduced-motion: kill all transitions/animations */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Font display swap — supplement @fontsource defaults */
+@font-face {
+  font-family: "Teko";
+  font-display: swap;
+}
+
+/* Reduce CLS from Teko swap by sizing the fallback to match Teko's condensed metrics */
+@font-face {
+  font-family: "Teko Fallback";
+  src: local("Arial Narrow"), local("Arial");
+  size-adjust: 78%;
+  ascent-override: 120%;
+  descent-override: 25%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: "Archivo";
+  font-display: swap;
+}
+@font-face {
+  font-family: "JetBrains Mono";
+  font-display: swap;
+}

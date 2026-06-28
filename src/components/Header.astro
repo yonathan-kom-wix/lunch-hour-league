@@ -1,0 +1,76 @@
+---
+import CountdownClock from './CountdownClock';
+const navLinks = [
+  { label: "Home", href: "/" },
+  { label: "Format", href: "/format" },
+  { label: "Standings", href: "/standings" },
+  { label: "Venues", href: "/venues" },
+  { label: "Register", href: "/register" },
+  { label: "Rules", href: "/rules" },
+];
+const current = Astro.url.pathname;
+---
+
+<header class="border-b border-border bg-background sticky top-0 z-50">
+  <div class="max-w-7xl mx-auto px-4 flex items-center justify-between h-14">
+    <a href="/" class="font-display text-xl tracking-tight text-text uppercase shrink-0">
+      Lunch Hour League
+    </a>
+
+    <nav class="hidden md:flex gap-6">
+      {navLinks.map(({ label, href }) => (
+        <a
+          href={href}
+          class={`font-mono text-xs tracking-widest uppercase transition-colors py-3 inline-flex items-center ${
+            current === href ? "text-primary border-b-2 border-primary" : "text-muted hover:text-text"
+          }`}
+        >
+          {label}
+        </a>
+      ))}
+    </nav>
+
+    <div class="flex items-center gap-2">
+      <div class="font-mono text-xs tracking-widest uppercase border border-border px-3 py-1.5 bg-dark text-on-dark whitespace-nowrap">
+        <span class="hidden sm:inline">NEXT KICKOFF: </span><CountdownClock client:load />
+      </div>
+      <button
+        id="nav-toggle"
+        class="md:hidden p-2 -mr-1 text-text min-h-[44px] min-w-[44px] flex items-center justify-center"
+        aria-label="Open navigation"
+        aria-expanded="false"
+        aria-controls="mobile-nav"
+      >
+        <svg width="20" height="14" viewBox="0 0 20 14" fill="currentColor" aria-hidden="true">
+          <rect width="20" height="2"/>
+          <rect y="6" width="20" height="2"/>
+          <rect y="12" width="20" height="2"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <div id="mobile-nav" class="hidden border-t border-border md:hidden bg-background">
+    <nav class="flex flex-col">
+      {navLinks.map(({ label, href }) => (
+        <a
+          href={href}
+          class={`font-mono text-xs tracking-widest uppercase px-4 py-4 border-b border-border transition-colors ${
+            current === href ? "text-primary bg-surface" : "text-muted hover:text-text hover:bg-surface"
+          }`}
+        >
+          {label}
+        </a>
+      ))}
+    </nav>
+  </div>
+</header>
+
+<script>
+  const btn = document.getElementById('nav-toggle');
+  const nav = document.getElementById('mobile-nav');
+  btn?.addEventListener('click', () => {
+    const isNowOpen = !nav?.classList.toggle('hidden');
+    btn.setAttribute('aria-expanded', String(isNowOpen));
+  });
+</script>

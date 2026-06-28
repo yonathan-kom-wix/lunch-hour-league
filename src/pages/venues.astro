@@ -1,0 +1,106 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { items } from '@wix/data';
+
+const STATIC_VENUES = [
+  { name: "The Cage, Whitworth Street", postcode: "M1",  walk: "6 MIN WALK",  surface: "3G Astro",         slots: "12:15, 12:45", desc: "Covered all-weather pitch adjacent to Oxford Road corridor. Shower block on-site.",  image: "/venues/the-cage.webp" },
+  { name: "Spinningfields Five",        postcode: "M3",  walk: "4 MIN WALK",  surface: "Premium 4G",       slots: "12:15, 13:00", desc: "Indoor sprung floor pitch inside the Deansgate tower complex. Climate controlled.",  image: "/venues/spinningfields-five.webp" },
+  { name: "Castlefield Turf",           postcode: "M15", walk: "12 MIN WALK", surface: "Indoor hardcourt", slots: "11:45, 12:30", desc: "Largest venue in the network. Suitable for overflow fixtures and play-offs.",          image: "/venues/castlefield-turf.webp" },
+  { name: "Ancoats Arena",              postcode: "M4",  walk: "8 MIN WALK",  surface: "Sand-based Astro", slots: "12:15, 13:00", desc: "Manchester's newest 3G facility. New for Autumn 2026 season.",                        image: "/venues/ancoats-arena.webp" },
+];
+
+type Venue = typeof STATIC_VENUES[number];
+
+async function fetchVenues(): Promise<Venue[]> {
+  try {
+    const result = await items.query('Venues').find();
+    if (!result.items.length) return STATIC_VENUES;
+    return result.items.map((raw) => {
+      const r = raw as Record<string, unknown>;
+      const postcode = String(r.postcode ?? '');
+      const staticMatch = STATIC_VENUES.find(v => v.postcode === postcode);
+      return {
+        name:     String(r.name     ?? ''),
+        postcode,
+        walk:     String(r.walk     ?? ''),
+        surface:  String(r.surface  ?? ''),
+        slots:    String(r.slots    ?? ''),
+        desc:     String(r.desc     ?? ''),
+        image:    String(r.image    ?? staticMatch?.image ?? ''),
+      };
+    });
+  } catch {
+    return STATIC_VENUES;
+  }
+}
+
+const venues = await fetchVenues();
+
+const jsonld = {
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  "name": "Lunch Hour League Pitches",
+  "itemListElement": venues.map((v, i) => ({
+    "@type": "SportsActivityLocation",
+    "position": i + 1,
+    "name": v.name,
+    "address": { "@type": "PostalAddress", "postalCode": v.postcode, "addressLocality": "Manchester" },
+  })),
+};
+---
+
+<Layout title="Venues" description="Every pitch within 12 minutes of a Manchester city-centre office. Walk times measured in actual shoes." jsonld={jsonld}>
+
+  <!-- HERO -->
+  <section class="border-b border-border">
+    <div class="max-w-7xl mx-auto px-4 py-10">
+      <h1 class="font-display text-5xl md:text-7xl uppercase leading-none">Active Pitches</h1>
+      <p class="font-body text-sm text-muted mt-3">Locations vetted for corporate proximity and rapid transit. Strict adherence to schedule required.</p>
+    </div>
+  </section>
+
+  <!-- VENUE GRID -->
+  <section class="max-w-7xl mx-auto px-4 py-10">
+    <div class="grid md:grid-cols-2 gap-0 border border-border">
+      {venues.map(({ name, postcode, walk, surface, slots, desc, image }, i) => (
+        <div class="md:border-r border-b border-border last-of-type:border-b-0 md:[&:nth-child(2n)]:border-r-0 md:[&:nth-child(n+3)]:border-b-0">
+          <div class="aspect-video border-b border-border/30 overflow-hidden">
+            <img
+              src={image}
+              alt={`${name} pitch`}
+              class="w-full h-full object-cover"
+              width="1400"
+              height="786"
+              loading={i === 0 ? undefined : "lazy"}
+              fetchpriority={i === 0 ? "high" : undefined}
+            />
+          </div>
+          <div class="p-6">
+            <div class="flex items-start justify-between gap-4 mb-4">
+              <div>
+                <p class="font-mono text-xs text-muted uppercase tracking-widest mb-1">{postcode} · Premises</p>
+                <h2 class="font-display text-xl uppercase">{name}</h2>
+              </div>
+              <span class="shrink-0 bg-primary text-on-dark font-mono text-xs uppercase tracking-widest px-2 py-1">{walk}</span>
+            </div>
+            <div class="grid grid-cols-2 gap-4 border-t border-border pt-4 mb-4">
+              <div>
+                <p class="font-mono text-xs text-muted uppercase tracking-widest">Surface</p>
+                <p class="font-body text-sm text-text mt-1">{surface}</p>
+              </div>
+              <div>
+                <p class="font-mono text-xs text-muted uppercase tracking-widest">Slots</p>
+                <p class="font-body text-sm text-text mt-1">{slots}</p>
+              </div>
+            </div>
+            <p class="font-body text-sm text-muted mb-6">{desc}</p>
+            <a href={`/register?venue=${encodeURIComponent(name)}`} class="block w-full border border-border font-mono text-xs uppercase tracking-widest py-2.5 text-center text-text hover:bg-dark hover:text-on-dark hover:border-dark transition-colors">
+              Register for this venue
+            </a>
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+</Layout>

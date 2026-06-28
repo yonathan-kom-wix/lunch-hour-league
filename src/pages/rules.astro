@@ -1,0 +1,131 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const jsonld = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    { "@type": "Question", "name": "How long does the whole thing actually take?", "acceptedAnswer": { "@type": "Answer", "text": "Sixty minutes, door to desk. Kickoff is 12:15, the final whistle is 12:55, and showers are clear by 13:00." } },
+    { "@type": "Question", "name": "How many players do we need to register?", "acceptedAnswer": { "@type": "Answer", "text": "A squad of six. You play five-a-side with one rolling sub." } },
+    { "@type": "Question", "name": "What happens if we are late to kickoff?", "acceptedAnswer": { "@type": "Answer", "text": "The clock starts at 12:15 whether you are on the pitch or not. Late teams play short minutes." } },
+    { "@type": "Question", "name": "Who is the disciplinary panel and are they serious?", "acceptedAnswer": { "@type": "Answer", "text": "It is three captains and a whistle. Mostly it is a joke. The one rule it enforces is real: do not schedule a meeting over match day." } },
+    { "@type": "Question", "name": "Where are the pitches?", "acceptedAnswer": { "@type": "Answer", "text": "Every venue is a sub-eight-minute walk from a city-centre office cluster." } },
+    { "@type": "Question", "name": "Can a company enter more than one team?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. Register each team separately and we will try to keep them in different divisions." } },
+  ],
+};
+
+const faqs = [
+  { q: "How long does the whole thing actually take?", a: "Sixty minutes, door to desk. Kickoff is 12:15, the final whistle is 12:55, and showers are clear by 13:00. We timed the change and the shower with a stopwatch so the number is real." },
+  { q: "How many players do we need to register?", a: "A squad of six. You play five-a-side with one rolling sub, so nobody sits out a full match and you can cover a sick day without forfeiting." },
+  { q: "What happens if we are late to kickoff?", a: "The clock starts at 12:15 whether you are on the pitch or not, because the next match needs the slot at 13:00. Late teams play short minutes. The disciplinary panel finds this very funny." },
+  { q: "Who is the disciplinary panel and are they serious?", a: "It is three captains and a whistle. Mostly it is a joke. The one rule it enforces is real: do not schedule a meeting over match day and expect sympathy." },
+  { q: "Where are the pitches?", a: "Every venue is a sub-eight-minute walk from a city-centre office cluster, and the Venues page lists the postcode and the walk time we measured in actual shoes." },
+  { q: "Can a company enter more than one team?", a: "Yes. Register each team separately and we will try to keep them in different divisions so finance does not have to beat sales in week one." },
+];
+
+const cardPenalties = [
+  { card: "Yellow", offence: "Late kickoff", penalty: "3 min deduction" },
+  { card: "Yellow", offence: "Meeting scheduled over match day", penalty: "Public warning" },
+  { card: "Red",    offence: "Repeat meeting infringement", penalty: "1 match ban + public hearing" },
+  { card: "Red",    offence: "Forfeit without notice", penalty: "3 point deduction" },
+];
+---
+
+<Layout title="The Rules" description="Disciplinary panel, the meeting rule, and FAQ for the Lunch Hour League." jsonld={jsonld}>
+
+  <!-- HERO -->
+  <section class="border-b border-border">
+    <div class="max-w-7xl mx-auto px-4 py-10">
+      <h1 class="font-display text-5xl md:text-7xl uppercase leading-none">League Rulebook</h1>
+      <p class="font-mono text-xs uppercase tracking-widest text-muted mt-3">Strict compliance required. The clock does not stop for corporate emergencies.</p>
+    </div>
+  </section>
+
+  <div class="max-w-7xl mx-auto px-4 py-10 grid md:grid-cols-2 gap-10">
+
+    <!-- MEETING RULE -->
+    <div class="flex flex-col gap-8">
+      <div class="border-2 border-primary bg-primary/5 p-6">
+        <p class="font-mono text-xs uppercase tracking-widest text-primary mb-3">The Meeting Rule · Section 1.00</p>
+        <p class="font-body text-sm text-text leading-relaxed mb-4">
+          A scheduled calendar invite does not constitute a valid excuse for absence or lateness. Match day operates with the same authority as a quarterly board meeting.
+        </p>
+        <ul class="flex flex-col gap-2 font-mono text-xs text-muted border-t border-border pt-4">
+          <li>→ Missing pitch-side results in a mandatory 3-minute deduction.</li>
+          <li>→ "My call ran over" is not an invalid defence.</li>
+          <li>→ "We can't sit at fewer than 4 players if it drops below 4" (Section 1.3)</li>
+        </ul>
+      </div>
+
+      <!-- MATCH PROTOCOL -->
+      <div>
+        <h2 class="font-display text-2xl uppercase mb-4">Match Protocol</h2>
+        <div class="border border-border flex flex-col gap-0">
+          {[
+            { n: "01", label: "Duration", rule: "Strictly 40-min games. 20-min halves. A referee enforces the whistle at 12:55." },
+            { n: "02", label: "Rosters",  rule: "Rolling subs at any dead ball. Minimum 4 players to start; forfeiture rules apply if it drops below 4 during play." },
+            { n: "03", label: "Offsides", rule: "No offside rule. No overhead height limit except structural." },
+          ].map(({ n, label, rule }) => (
+            <div class="grid grid-cols-[auto_1fr] border-b last:border-b-0 border-border">
+              <div class="bg-dark text-on-dark w-10 flex items-center justify-center font-mono text-xs font-bold">{n}</div>
+              <div class="px-4 py-3">
+                <p class="font-display text-sm uppercase mb-1">{label}</p>
+                <p class="font-body text-xs text-muted">{rule}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+
+    <!-- DISCIPLINARY PANEL + CTA -->
+    <div class="flex flex-col gap-8">
+      <div>
+        <h2 class="font-display text-2xl uppercase mb-4">Disciplinary Panel</h2>
+        <p class="font-mono text-xs text-muted uppercase tracking-widest mb-4">Agreement reached is enforced by the League judiciary. Penalties issued between seasons.</p>
+        <div class="border border-border overflow-hidden">
+          <div class="grid grid-cols-3 bg-dark text-on-dark font-mono text-xs uppercase tracking-widest px-3 py-2 border-b border-border/20">
+            <span>Card</span>
+            <span>Offence</span>
+            <span>Penalty</span>
+          </div>
+          {cardPenalties.map(({ card, offence, penalty }) => (
+            <div class="grid grid-cols-3 border-b last:border-b-0 border-border px-3 py-2.5 text-xs font-mono items-center">
+              <span class={card === "Red" ? "text-red-600 font-bold" : "text-yellow-600 font-bold"}>{card}</span>
+              <span class="text-muted">{offence}</span>
+              <span class={card === "Red" ? "text-red-600" : "text-text"}>{penalty}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div class="bg-dark text-on-dark p-8 flex items-center justify-center">
+        <p class="font-display text-4xl md:text-5xl uppercase leading-tight text-center">
+          Clock in.<br />Play hard.<br />Clock out.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- FAQ -->
+  <section class="border-t border-border">
+    <div class="max-w-7xl mx-auto px-4 py-10">
+      <h2 class="font-display text-2xl uppercase mb-2">Operational Directives (FAQ)</h2>
+      <p class="font-mono text-xs text-muted uppercase tracking-widest mb-6">Expand to view</p>
+      <div class="border border-border" id="faq">
+        {faqs.map(({ q, a }) => (
+          <details class="border-b last:border-b-0 border-border group">
+            <summary class="flex items-center justify-between px-5 py-4 cursor-pointer list-none font-mono text-xs uppercase tracking-widest text-text hover:bg-surface transition-colors">
+              {q}
+              <span class="text-muted ml-4 shrink-0 group-open:rotate-45 transition-transform">+</span>
+            </summary>
+            <div class="px-5 py-4 border-t border-border bg-surface font-body text-sm text-muted leading-relaxed">
+              {a}
+            </div>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+</Layout>

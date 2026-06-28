@@ -1,0 +1,37 @@
+---
+const navLinks = [
+  { label: "Home", href: "/" },
+  { label: "Format", href: "/format" },
+  { label: "Standings", href: "/standings" },
+  { label: "Venues", href: "/venues" },
+  { label: "Register", href: "/register" },
+  { label: "Rules", href: "/rules" },
+];
+---
+<footer>
+  <div class="border-b border-border bg-primary">
+    <div class="max-w-7xl mx-auto px-4 py-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <p class="font-display text-xl uppercase text-on-dark">Ready to block the hour?</p>
+      <a href="/register" class="shrink-0 bg-on-dark text-primary font-mono text-xs tracking-widest uppercase px-6 py-3 border border-on-dark/40 hover:bg-accent hover:text-on-dark transition-colors">
+        Register your team
+      </a>
+    </div>
+  </div>
+  <div class="max-w-7xl mx-auto px-4 py-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+    <div>
+      <p class="font-display text-lg uppercase text-text">Lunch Hour League</p>
+      <p class="font-mono text-xs text-muted uppercase tracking-widest mt-1">Corporate Athletic Division</p>
+    </div>
+    <nav class="flex flex-wrap gap-6">
+      {navLinks.map(({ label, href }) => (
+        <a href={href} class="font-mono text-xs text-muted uppercase tracking-widest hover:text-text transition-colors py-2 inline-block min-h-[44px] flex items-center">
+          {label}
+        </a>
+      ))}
+    </nav>
+    <div class="flex flex-col gap-1 text-right">
+      <p class="font-mono text-xs text-muted">@lunchhourleague · @the1215club</p>
+      <p class="font-mono text-xs text-muted">© 2026 Lunch Hour League</p>
+    </div>
+  </div>
+</footer>

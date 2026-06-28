@@ -1,0 +1,213 @@
+---
+import Layout from '../layouts/Layout.astro';
+import MobileRegisterStickyBar from '../components/MobileRegisterStickyBar';
+import { items } from '@wix/data';
+
+const topTeams = [
+  { pos: 1, name: "Northern Quarter Logistics", div: "PRM", p: 12, w: 10, d: 1, l: 1, gf: 34, ga: 12, gd: "+22", pts: 31 },
+  { pos: 2, name: "Deansgate Audit FC",          div: "PRM", p: 12, w:  9, d: 2, l: 1, gf: 28, ga: 14, gd: "+14", pts: 29 },
+  { pos: 3, name: "Spinningfields Utd",           div: "PRM", p: 12, w:  8, d: 1, l: 3, gf: 25, ga: 18, gd: "+7",  pts: 25 },
+];
+
+const venues = [
+  { name: "The Cage, Whitworth Street", walk: "6 MIN WALK", postcode: "M1" },
+  { name: "Spinningfields Five",        walk: "4 MIN WALK", postcode: "M3" },
+  { name: "Castlefield Turf",           walk: "12 MIN WALK", postcode: "M15" },
+  { name: "Ancoats Arena",              walk: "8 MIN WALK", postcode: "M4" },
+];
+
+const STATIC_CAPTAINS = [
+  { name: "Priya Shah",  company: "Deansgate Audit FC",        quote: "I have never once been late to a one o'clock because of football. That sentence used to be a lie." },
+  { name: "Tom Okafor",  company: "Northern Quarter Logistics", quote: "Six players means I am not begging people to commit to ninety minutes. They commit to one lunch. They show up." },
+  { name: "Ana Machado", company: "Spinningfields Utd",         quote: "We won the division. The whole thing fits in a lunch break. Our manager still doesn't know." },
+];
+
+async function fetchCaptains() {
+  try {
+    const result = await items.query('Captains').find();
+    if (!result.items.length) return STATIC_CAPTAINS;
+    return result.items.map((raw) => {
+      const r = raw as Record<string, unknown>;
+      return { name: String(r.name ?? ''), company: String(r.company ?? ''), quote: String(r.quote ?? '') };
+    });
+  } catch {
+    return STATIC_CAPTAINS;
+  }
+}
+
+const captains = await fetchCaptains();
+
+const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://lunch-hour-baed51c3-yonathank.wix-site-host.com';
+
+const jsonld = {
+  "@context": "https://schema.org",
+  "@type": "SportsOrganization",
+  "name": "Lunch Hour League",
+  "description": "Manchester corporate 5-a-side football league. Kickoff 12:15, back at your desk by one.",
+  "url": siteUrl,
+  "address": { "@type": "PostalAddress", "addressLocality": "Manchester", "addressCountry": "GB" },
+  "sameAs": ["https://twitter.com/lunchhourleague", "https://twitter.com/the1215club"],
+};
+---
+
+<Layout title="Home" description="Kickoff 12:15. Back at your desk by one. Corporate 5-a-side football in Manchester." jsonld={jsonld}>
+
+  <!-- HERO -->
+  <section class="relative bg-dark text-on-dark overflow-hidden">
+    <div class="absolute inset-0 flex items-center justify-center pointer-events-none select-none" aria-hidden="true">
+      <div class="border border-on-dark/10 w-[min(40vw,400px)] h-[min(40vw,400px)]" style="border-radius:50%"></div>
+      <div class="absolute top-1/2 left-0 right-0 h-px bg-on-dark/10"></div>
+    </div>
+
+    <div class="relative max-w-7xl mx-auto px-4 py-20 md:py-32 flex flex-col items-center text-center gap-6">
+      <p class="font-mono text-xs tracking-widest uppercase text-on-dark/60 hero-item" style="--delay:0ms">
+        Manchester Corporate Athletic Division
+      </p>
+      <div class="font-display font-semibold text-[clamp(6rem,20vw,16rem)] leading-none tracking-tight uppercase text-on-dark hero-item" style="--delay:0ms" id="hero-time">
+        12:15
+      </div>
+      <h1 class="font-display font-semibold text-2xl md:text-4xl uppercase tracking-tight text-on-dark max-w-xl hero-item" style="--delay:80ms">
+        Kickoff 12:15. Back at your desk by one.
+      </h1>
+      <div class="flex gap-4 flex-wrap justify-center hero-item" style="--delay:160ms">
+        <a href="/register" class="inline-block bg-primary text-on-dark font-mono text-xs tracking-widest uppercase px-8 py-4 border border-primary hover:bg-accent transition-colors focus-visible:outline-on-dark">
+          Register your team
+        </a>
+        <a href="/standings" class="inline-block bg-transparent text-on-dark font-mono text-xs tracking-widest uppercase px-8 py-4 border border-on-dark/40 hover:border-on-dark transition-colors">
+          See the standings
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 60-MINUTE BREAKDOWN -->
+  <section class="border-b border-border" aria-label="60-minute breakdown">
+    <div class="max-w-7xl mx-auto px-4 py-0 grid grid-cols-3">
+      {[
+        { n: "05", label: "MINUTES", sub: "To Change" },
+        { n: "40", label: "MINUTES", sub: "To Play",  dark: true },
+        { n: "15", label: "MINUTES", sub: "To Shower" },
+      ].map(({ n, label, sub, dark }) => (
+        <div class={`flex flex-col items-center justify-center gap-2 py-12 border-r last:border-r-0 border-border ${dark ? "bg-dark text-on-dark" : ""}`}>
+          <div class={`font-mono text-sm border px-3 py-2 ${dark ? "border-on-dark/30 text-accent" : "border-border text-primary"}`}>{n}</div>
+          <p class={`font-display text-sm uppercase tracking-widest ${dark ? "text-accent" : "text-text"}`}>{label}</p>
+          <p class={`font-mono text-xs uppercase tracking-wider ${dark ? "text-on-dark/60" : "text-muted"}`}>{sub}</p>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- LIVE STANDINGS PREVIEW -->
+  <section class="border-b border-border" aria-label="Top standings">
+    <div class="max-w-7xl mx-auto px-4 py-16 grid md:grid-cols-2 gap-12 items-start">
+      <div>
+        <h2 class="font-display text-3xl md:text-5xl uppercase leading-tight">
+          Someone is top of the table right now. It should be you.
+        </h2>
+        <a href="/standings" class="mt-6 inline-block font-mono text-xs uppercase tracking-widest underline underline-offset-4 text-primary">
+          View Full Standings
+        </a>
+      </div>
+      <div class="border border-border">
+        <div class="grid grid-cols-[auto_1fr_auto] md:grid-cols-[auto_1fr_auto_auto_auto] bg-dark text-on-dark px-3 py-2 font-mono text-xs uppercase tracking-wider border-b border-border/20">
+          <span class="w-8">POS</span><span>TEAM</span><span class="hidden md:inline w-8 text-center">P</span><span class="hidden md:inline w-8 text-center">GD</span><span class="w-10 text-right font-bold">PTS</span>
+        </div>
+        {topTeams.map(({ pos, name, p, gd, pts }) => (
+          <div class="grid grid-cols-[auto_1fr_auto] md:grid-cols-[auto_1fr_auto_auto_auto] px-3 py-2.5 border-b border-border last:border-b-0 items-center hover:bg-surface/60 transition-colors font-mono text-xs">
+            <span class="w-8 text-muted">{pos}</span>
+            <span class="text-text uppercase truncate pr-2">{name}</span>
+            <span class="hidden md:inline w-8 text-center text-muted">{p}</span>
+            <span class="hidden md:inline w-8 text-center text-muted">{gd}</span>
+            <span class="w-10 text-right font-bold text-primary">{pts}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW A SEASON RUNS -->
+  <section class="border-b border-border">
+    <div class="max-w-7xl mx-auto px-4 py-16">
+      <h2 class="font-display text-3xl uppercase text-center mb-10">How It Works</h2>
+      <div class="grid md:grid-cols-3 gap-0 border border-border">
+        {[
+          { n: "01", heading: "Register Six", body: "Gather your department. Minimum squad of six required to enter the draw." },
+          { n: "02", heading: "Get Fixtures",  body: "10-week season. Matches scheduled strictly between 12:00 and 13:00 on weekdays." },
+          { n: "03", heading: "Defend GD",     body: "Every goal matters in the corporate ladder. Goal difference decides tie-breaks." },
+        ].map(({ n, heading, body }) => (
+          <div class="border-r last:border-r-0 border-border px-8 py-10">
+            <p class="font-mono text-muted text-sm mb-4">{n}</p>
+            <h3 class="font-display text-xl uppercase mb-3">{heading}</h3>
+            <p class="font-body text-sm text-muted leading-relaxed">{body}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- VENUES STRIP -->
+  <section class="border-b border-border" aria-label="Venues">
+    <div class="max-w-7xl mx-auto px-4 py-12">
+      <div class="flex items-end justify-between mb-6 flex-wrap gap-4">
+        <h2 class="font-display text-2xl uppercase">Every pitch is a sub-eight-minute walk from a city-centre office. We checked the walk, in shoes.</h2>
+        <a href="/venues" class="font-mono text-xs uppercase tracking-widest underline underline-offset-4 text-primary shrink-0">View all venues</a>
+      </div>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-0 border border-border">
+        {venues.map(({ name, walk, postcode }) => (
+          <div class="border-r last:border-r-0 border-border px-5 py-6">
+            <p class="font-mono text-xs text-muted uppercase tracking-widest mb-1">{postcode}</p>
+            <p class="font-display text-base uppercase leading-tight mb-3">{name}</p>
+            <span class="inline-block bg-primary text-on-dark font-mono text-xs uppercase tracking-widest px-2 py-1">{walk}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- DISCIPLINARY PANEL CALLOUT -->
+  <section class="border-b border-border bg-dark text-on-dark" aria-label="Disciplinary panel">
+    <div class="max-w-7xl mx-auto px-4 py-12 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+      <div>
+        <p class="font-mono text-xs tracking-widest uppercase text-on-dark/60 mb-2">The Panel · Section 1.00</p>
+        <p class="font-display text-2xl md:text-3xl uppercase">Schedule a meeting over match day and the panel will hear about it.</p>
+      </div>
+      <a href="/rules" class="shrink-0 font-mono text-xs uppercase tracking-widest px-6 py-3 border border-on-dark/40 text-on-dark hover:border-on-dark transition-colors">
+        Read the rules
+      </a>
+    </div>
+  </section>
+
+  <!-- CAPTAIN QUOTES -->
+  <section class="border-b border-border">
+    <div class="max-w-7xl mx-auto px-4 py-16">
+      <div class="grid md:grid-cols-3 gap-0 border border-border">
+        {captains.map(({ name, company, quote }) => (
+          <div class="border-r last:border-r-0 border-border px-8 py-10">
+            <p class="font-body text-sm text-text leading-relaxed mb-6">"{quote}"</p>
+            <p class="font-display text-sm uppercase">{name}</p>
+            <p class="font-mono text-xs text-muted uppercase tracking-widest">{company}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- mobile sticky CTA -->
+  <MobileRegisterStickyBar client:load />
+
+</Layout>
+
+<style>
+  .hero-item {
+    --delay: 0ms;
+    animation: hero-rise 0.4s ease both;
+    animation-delay: var(--delay);
+  }
+  @keyframes hero-rise {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hero-item { animation: none; }
+  }
+</style>

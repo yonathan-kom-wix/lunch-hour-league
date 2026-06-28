@@ -1,0 +1,19 @@
+---
+import Layout from '../layouts/Layout.astro';
+import RegisterForm from '../components/RegisterForm';
+
+const defaultVenue = Astro.url.searchParams.get('venue') ?? '';
+---
+
+<Layout title="Register" description="Register your company team for the Lunch Hour League. Secure your slot.">
+  <section class="max-w-3xl mx-auto px-4 py-16">
+
+    <div class="bg-dark text-on-dark px-8 py-10 mb-10">
+      <h1 class="font-display text-5xl md:text-6xl uppercase leading-none mb-2">Squad Registration</h1>
+      <p class="font-mono text-xs uppercase tracking-widest text-on-dark/60">Secure your slot. Block the hour.</p>
+    </div>
+
+    <RegisterForm client:idle defaultVenue={defaultVenue} />
+
+  </section>
+</Layout>
