@@ -55,23 +55,16 @@ const client = createClient({
   }),
 });
 
-async function ensureCollection(id, displayName, fields) {
+const PUBLIC_READ  = { read: 'ANYONE', insert: 'ADMIN',  update: 'ADMIN', remove: 'ADMIN' };
+const PUBLIC_WRITE = { read: 'ADMIN',  insert: 'ANYONE', update: 'ADMIN', remove: 'ADMIN' };
+
+async function ensureCollection(id, displayName, fields, permissions = PUBLIC_READ) {
   try {
     await client.collections.getDataCollection(id);
     console.log(`  collection ${id} already exists`);
   } catch {
     console.log(`  creating collection ${id}...`);
-    await client.collections.createDataCollection({
-      id,
-      displayName,
-      fields,
-      permissions: {
-        read: 'ANYONE',
-        insert: 'ADMIN',
-        update: 'ADMIN',
-        remove: 'ADMIN',
-      },
-    });
+    await client.collections.createDataCollection({ id, displayName, fields, permissions });
     console.log(`  created ${id}`);
   }
 }
@@ -175,7 +168,7 @@ async function upsertItems(collectionId, seedData) {
 
   await ensureCollection('Teams', 'Teams', TEAM_FIELDS);
   await ensureCollection('Venues', 'Venues', VENUE_FIELDS);
-  await ensureCollection('Registrations', 'Registrations', REGISTRATION_FIELDS);
+  await ensureCollection('Registrations', 'Registrations', REGISTRATION_FIELDS, PUBLIC_WRITE);
   await ensureCollection('StoryBlocks', 'StoryBlocks', STORY_FIELDS);
   await ensureCollection('Captains', 'Captains', CAPTAIN_FIELDS);
 
