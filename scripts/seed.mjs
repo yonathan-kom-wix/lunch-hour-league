@@ -106,12 +106,12 @@ const VENUE_FIELDS = [
 ];
 
 const REGISTRATION_FIELDS = [
-  { key: 'company',   displayName: 'Company Name',     type: TEXT },
-  { key: 'captain',   displayName: 'Captain Name',     type: TEXT },
-  { key: 'email',     displayName: 'Work Email',       type: TEXT },
-  { key: 'squadSize', displayName: 'Squad Size',       type: TEXT },
-  { key: 'division',  displayName: 'Division',         type: TEXT },
-  { key: 'venue',     displayName: 'Preferred Venue',  type: TEXT },
+  { key: 'companyName',       displayName: 'Company Name',       type: TEXT },
+  { key: 'captainName',       displayName: 'Captain Name',       type: TEXT },
+  { key: 'workEmail',         displayName: 'Work Email',         type: TEXT },
+  { key: 'squadSize',         displayName: 'Squad Size',         type: TEXT },
+  { key: 'preferredDivision', displayName: 'Preferred Division', type: TEXT },
+  { key: 'preferredVenue',    displayName: 'Preferred Venue',    type: TEXT },
 ];
 
 const STORY_FIELDS = [
