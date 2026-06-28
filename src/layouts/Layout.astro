@@ -45,6 +45,7 @@ const arch600Woff2 = new URL(
     {jsonld && (
       <script is:inline type="application/ld+json" set:html={JSON.stringify(jsonld)} />
     )}
+    <slot name="head" />
   </head>
   <body class="bg-background text-text font-body min-h-screen">
     <Header />

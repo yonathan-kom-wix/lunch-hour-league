@@ -51,9 +51,12 @@ const jsonld = {
 ---
 
 <Layout title="Home" description="Kickoff 12:15. Back at your desk by one. Corporate 5-a-side football in Manchester." jsonld={jsonld}>
+  <link slot="head" rel="preload" as="image" href="/hero-bg.webp" />
 
   <!-- HERO -->
   <section class="relative bg-dark text-on-dark overflow-hidden">
+    <img src="/hero-bg.webp" alt="" aria-hidden="true" fetchpriority="high"
+      class="absolute inset-0 w-full h-full object-cover object-center opacity-30 select-none pointer-events-none" />
     <div class="absolute inset-0 flex items-center justify-center pointer-events-none select-none" aria-hidden="true">
       <div class="border border-on-dark/10 w-[min(40vw,400px)] h-[min(40vw,400px)]" style="border-radius:50%"></div>
       <div class="absolute top-1/2 left-0 right-0 h-px bg-on-dark/10"></div>
@@ -89,8 +92,8 @@ const jsonld = {
         { n: "15", label: "MINUTES", sub: "To Shower" },
       ].map(({ n, label, sub, dark }) => (
         <div class={`flex flex-col items-center justify-center gap-2 py-12 border-r last:border-r-0 border-border ${dark ? "bg-dark text-on-dark" : ""}`}>
-          <div class={`font-mono text-sm border px-3 py-2 ${dark ? "border-on-dark/30 text-accent" : "border-border text-primary"}`}>{n}</div>
-          <p class={`font-display text-sm uppercase tracking-widest ${dark ? "text-accent" : "text-text"}`}>{label}</p>
+          <div class={`font-mono text-sm border px-3 py-2 ${dark ? "border-on-dark/30 text-on-dark" : "border-border text-primary"}`}>{n}</div>
+          <p class={`font-display text-sm uppercase tracking-widest ${dark ? "text-on-dark" : "text-text"}`}>{label}</p>
           <p class={`font-mono text-xs uppercase tracking-wider ${dark ? "text-on-dark/60" : "text-muted"}`}>{sub}</p>
         </div>
       ))}
